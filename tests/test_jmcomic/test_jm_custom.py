@@ -36,6 +36,8 @@ class Test_Custom(JmTestConfigurable):
             os.path.abspath(save_dir),
             os.path.abspath(base_dir + dic[1] + '/' + dic[2]),
         )
+        JmModuleConfig.CLASS_ALBUM = JmAlbumDetail
+        JmModuleConfig.CLASS_PHOTO = JmPhotoDetail
 
     def test_extends_api_client(self):
         class MyClient(JmApiClient):
@@ -44,8 +46,8 @@ class Test_Custom(JmTestConfigurable):
         JmModuleConfig.register_client(MyClient)
 
         self.assertListEqual(
-            JmModuleConfig.DOMAIN_API_LIST,
-            self.option.new_jm_client(domain_list=[], impl=MyClient.client_key).get_domain_list()
+            self.option.new_jm_client(domain_list=[], impl=MyClient.client_key).get_domain_list(),
+            JmModuleConfig.DOMAIN_API_UPDATED_LIST if JmModuleConfig.DOMAIN_API_UPDATED_LIST else JmModuleConfig.DOMAIN_API_LIST,
         )
 
     def test_extends_html_client(self):
@@ -104,7 +106,7 @@ class Test_Custom(JmTestConfigurable):
 
         JmModuleConfig.register_client(MyClient)
         self.assertListEqual(
-            JmModuleConfig.DOMAIN_API_LIST,
             self.option.new_jm_client(domain_list=[], impl=MyClient.client_key).get_domain_list(),
+            JmModuleConfig.DOMAIN_API_UPDATED_LIST if JmModuleConfig.DOMAIN_API_UPDATED_LIST else JmModuleConfig.DOMAIN_API_LIST,
             msg='继承client，不配置域名',
         )
